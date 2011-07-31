@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+
+require_once dirname(__DIR__) . '/lib/Autoloader.php';
+\dobie\Autoloader::register();
+
+use dobie\Console;
+
+$console = new Console();
+$console->run();
+
+?>

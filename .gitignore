@@ -1,0 +1,4 @@
+.DS_Store
+cov/*
+tmp/*
+tests/tmp/*
