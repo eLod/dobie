@@ -3,7 +3,12 @@
 namespace dobie\tests\mocks;
 
 class Base extends \dobie\Base {
-    protected $config = array('testKey' => 'testValue', 'testMergeKey' => array('keep' => 'keep', 'override' => 'default'), 'output' => null, 'error' => null);
+    protected $config = array(
+	'testKey' => 'testValue',
+	'testMergeKey' => array('keep' => 'keep', 'override' => 'default'),
+	'output' => null,
+	'error' => null
+    );
     protected $extendConfig = array('testExtendKey' => 'testExtendValue');
     protected $mergeConfig = array('testMergeKey');
 

@@ -12,7 +12,8 @@ class Autoloader {
     static public function path($class, $absolute = false) {
 	$class = ltrim($class, "\\");
 	if (strpos($class, __NAMESPACE__ . "\\") === 0) {
-	    $file = str_replace("\\", DIRECTORY_SEPARATOR, substr($class, strlen(__NAMESPACE__ . "\\"))) . '.php';
+	    $class = substr($class, strlen(__NAMESPACE__ . "\\"));
+	    $file = str_replace("\\", DIRECTORY_SEPARATOR, $class) . '.php';
 	    return ($absolute ? __DIR__ . DIRECTORY_SEPARATOR : '') . $file;
 	} else {
 	    return false;

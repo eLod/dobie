@@ -6,7 +6,7 @@ class Readline extends \dobie\Shell {
     protected $extendConfig = array(
 	'history' => true,
 	'history_file' => null,
-	'completion' => true,
+	'completion' => true
     );
     protected $completions;
 

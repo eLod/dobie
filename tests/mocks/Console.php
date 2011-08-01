@@ -10,7 +10,7 @@ class Console extends \dobie\Console {
 
     public function __construct(array $config = array()) {
 	parent::__construct($config);
-	if(!isset($config['no_override']) || $config['no_override'] !== true) {
+	if (!isset($config['no_override']) || $config['no_override'] !== true) {
 	    $this->shell = new Callback(array('read' => array($this, 'read')));
 	    $this->executor = new Callback(array('execute' => array($this, 'execute')));
 	}

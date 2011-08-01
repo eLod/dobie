@@ -14,7 +14,7 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
 	    "foo" => "bar",
 	    "int" => 1,
 	    "float" => 3.4,
-	    "array" => array(1,2,"string"),
+	    "array" => array(1,2,"string")
 	);
 	$this->assertFormatted(json_encode($data), $data);
     }

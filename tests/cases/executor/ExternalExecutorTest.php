@@ -51,11 +51,11 @@ class ExternalExecutorTest extends \PHPUnit_Framework_TestCase {
 	    return substr($fixture_path, strlen($path), strlen('.php') * -1);
 	}, glob($path . '*.php'));
 	$this->assertTrue(count($fixtures) > 0, "no fixtures found in {$path}");
-	foreach($fixtures as $fixture) {
-	    $this->assertTrue(is_file($path.$fixture.".php"), $path.$fixture.".php not found");
-	    $this->assertTrue(is_file($path.$fixture.".out"), $path.$fixture.".out not found");
-	    $code = explode("\n", file_get_contents($path.$fixture.".php"));
-	    $expected_out = explode("\n", file_get_contents($path.$fixture.".out"));
+	foreach ($fixtures as $fixture) {
+	    $this->assertTrue(is_file($path . $fixture . ".php"), "{$path}{$fixture}.php not found");
+	    $this->assertTrue(is_file($path . $fixture . ".out"), "{$path}{$fixture}.out not found");
+	    $code = explode("\n", file_get_contents($path . $fixture . ".php"));
+	    $expected_out = explode("\n", file_get_contents($path . $fixture . ".out"));
 	    $this->checkRun($code, $expected_out);
 	}
     }

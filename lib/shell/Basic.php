@@ -4,7 +4,7 @@ namespace dobie\shell;
 
 class Basic extends \dobie\Shell {
     protected $extendConfig = array(
-	'input' => STDIN,
+	'input' => STDIN
     );
 
     protected function readline($prompt_type = 'main') {

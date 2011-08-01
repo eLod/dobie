@@ -5,7 +5,8 @@ namespace dobie\tests;
 spl_autoload_register(function ($class) {
     $class = ltrim($class, "\\");
     if (strpos($class, __NAMESPACE__ . "\\") === 0) {
-	$file = str_replace("\\", DIRECTORY_SEPARATOR, substr($class, strlen(__NAMESPACE__ . "\\"))) . '.php';
+	$class = substr($class, strlen(__NAMESPACE__ . "\\"));
+	$file = str_replace("\\", DIRECTORY_SEPARATOR, $class) . '.php';
 	require $file;
     }
 });

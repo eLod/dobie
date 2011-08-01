@@ -2,9 +2,6 @@
 
 namespace dobie\executor;
 
-use lithium\core\Environment;
-use lithium\util\String;
-
 class ExternalExecutor extends \dobie\Executor {
     protected $external;
     protected $pipes;
@@ -18,7 +15,7 @@ class ExternalExecutor extends \dobie\Executor {
 '    if (feof(STDIN)) {',
 '	   exit;',
 '    }',
-'}',
+'}'
     );
 
     public function __construct(array $config = array()) {
@@ -28,7 +25,9 @@ class ExternalExecutor extends \dobie\Executor {
 	    'formatter_class' => $this->config['formatter']
 	);
 	$this->external_code = array_map(function($line) use ($strings) {
-	    return str_replace(array_map(function($key) { return "{:{$key}}"; }, array_keys($strings)), array_values($strings), $line);
+	    return str_replace(array_map(function($key) {
+		return "{:{$key}}";
+	    }, array_keys($strings)), array_values($strings), $line);
 	}, $this->external_code);
     }
 
@@ -40,7 +39,7 @@ class ExternalExecutor extends \dobie\Executor {
 	    $this->error("[ERROR] failed spawning process, cannot execute");
 	    return;
 	}
-	$path = $this->resource("external.".str_replace(" ", "_", microtime()).".php");
+	$path = $this->resource("external." . str_replace(" ", "_", microtime()) . ".php");
 	file_put_contents($path, $this->codeString($code, array("enclose_php" => true)));
 	fwrite($this->pipes[0], $path . PHP_EOL);
 	$finished_success = $this->read_external();
@@ -64,8 +63,15 @@ class ExternalExecutor extends \dobie\Executor {
 	    array("pipe", "w")
 	);
 	$path = $this->resource("external.main.php");
-	file_put_contents($path, $this->codeString($this->external_code, array("enclose_php" => true, "add_uses" => false, "add_return" => false, "add_bootstrap" => true)));
-	$this->external = proc_open(PHP_BINDIR . DIRECTORY_SEPARATOR . "php {$path}", $descriptorspec, $this->pipes);
+	file_put_contents($path, $this->codeString($this->external_code, array(
+	    "enclose_php" => true,
+	    "add_uses" => false,
+	    "add_return" => false,
+	    "add_bootstrap" => true
+	)));
+	$php_bin = substr(PHP_OS, 0, 3) == 'WIN' ? 'php.exe' : 'php';
+	$php_bin = PHP_BINDIR . DIRECTORY_SEPARATOR . $php_bin;
+	$this->external = proc_open("{$php_bin} {$path}", $descriptorspec, $this->pipes);
     }
 
     protected function kill_external () {

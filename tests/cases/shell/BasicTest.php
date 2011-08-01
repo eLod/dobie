@@ -12,7 +12,11 @@ class BasicTest extends  \PHPUnit_Framework_TestCase {
     public function setUp() {
 	$this->input = fopen("php://memory", "r+");
 	$this->output = array();
-	$this->shell = new Basic(array('prompts' => array('test' => 'testprompt> '), 'input' => $this->input, 'output' => array($this, 'proxyOut')));
+	$this->shell = new Basic(array(
+	    'prompts' => array('test' => 'testprompt> '),
+	    'input' => $this->input,
+	    'output' => array($this, 'proxyOut')
+	));
     }
 
     public function tearDown() {

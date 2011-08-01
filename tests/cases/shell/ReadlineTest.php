@@ -12,7 +12,11 @@ class ReadlineTest extends  \PHPUnit_Framework_TestCase {
     public function setUp() {
 	$this->input = fopen("php://memory", "r+");
 	$this->output = array();
-	$this->shell = new Readline(array('prompts' => array('test' => 'testprompt> '), 'output' => array($this, 'proxyOut'), 'history_file' => __FILE__));
+	$this->shell = new Readline(array(
+	    'prompts' => array('test' => 'testprompt> '),
+	    'output' => array($this, 'proxyOut'),
+	    'history_file' => __FILE__)
+	);
 	$this->shell->input = $this->input;
     }
 

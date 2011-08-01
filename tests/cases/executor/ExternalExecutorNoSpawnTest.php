@@ -34,7 +34,10 @@ class ExternalExecutorNoSpawnTest extends \PHPUnit_Framework_TestCase {
 	$this->assertEquals(array("[ERROR] failed spawning process, cannot execute"), $this->error);
 	$this->executor->execute(array('42'));
 	$this->assertEquals(array(), $this->output);
-	$this->assertEquals(array("[ERROR] failed spawning process, cannot execute", "[ERROR] failed spawning process, cannot execute"), $this->error);
+	$this->assertEquals(array(
+	    "[ERROR] failed spawning process, cannot execute",
+	    "[ERROR] failed spawning process, cannot execute"
+	), $this->error);
     }
 }
 

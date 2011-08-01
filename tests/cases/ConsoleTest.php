@@ -17,7 +17,11 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase {
     public function setUp() {
 	$this->input = fopen("php://memory", "r+");
 	$this->output = $this->errors = array();
-	$this->console = new Console(array('shell' => array('input' => $this->input), 'output' => array($this, 'proxyOut'), 'error' => array($this, 'proxyError')));
+	$this->console = new Console(array(
+	    'shell' => array('input' => $this->input),
+	    'output' => array($this, 'proxyOut'),
+	    'error' => array($this, 'proxyError')
+	));
     }
 
     public function tearDown() {
@@ -58,7 +62,12 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testResourcesNotWritable() {
-	$console = new Console(array('resources' => '/invalid/path/hopefully', 'error' => array($this, 'proxyError'), 'output' => false, 'no_override' => true));
+	$console = new Console(array(
+	    'resources' => '/invalid/path/hopefully',
+	    'error' => array($this, 'proxyError'),
+	    'output' => false,
+	    'no_override' => true
+	));
 	$this->assertFalse($console->run());
 	$this->assertRegExp('/^\[ERROR\] resources directory not writable/', array_pop($this->errors));
 	$console->stop();
@@ -67,7 +76,11 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase {
     public function testUsesReadlineIfPresented() {
 	ConsoleWithConfigurableReadline::$overrideReadline = true;
 	$this->errors = array();
-	$console = new ConsoleWithConfigurableReadline(array('shell' => array('completion' => false, 'history' => false), 'error' => array($this, 'proxyOut'), 'output' => false));
+	$console = new ConsoleWithConfigurableReadline(array(
+	    'shell' => array('completion' => false, 'history' => false),
+	    'error' => array($this, 'proxyOut'),
+	    'output' => false
+	));
 	$this->assertTrue($console->shell() instanceof \dobie\shell\Readline);
 	$this->assertEquals(array(), $this->errors);
 	$console->stop();
@@ -75,7 +88,10 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase {
 
     public function testShowsWarningIfReadlineNotPresented() {
 	ConsoleWithConfigurableReadline::$overrideReadline = false;
-	$console = new ConsoleWithConfigurableReadline(array('error' => array($this, 'proxyError'), 'output' => false));
+	$console = new ConsoleWithConfigurableReadline(array(
+	    'error' => array($this, 'proxyError'),
+	    'output' => false
+	));
 	$this->assertFalse($console->shell() instanceof \dobie\shell\Readline);
 	$this->assertRegExp('/^\[WARN\] Readline is not supported/', array_pop($this->errors));
 	$console->stop();

@@ -12,7 +12,7 @@ class Console extends \dobie\Base {
 	'resources' => '/tmp',
 	'shell' => array(),
 	'output' => STDOUT,
-	'error' => STDERR,
+	'error' => STDERR
     );
     protected $executor;
     protected $shell;
@@ -23,14 +23,18 @@ class Console extends \dobie\Base {
 	    $this->error("[ERROR] resources directory not writable ({$this->config['resources']}).");
 	    return;
 	}
-	$this->config['resources'] .= (substr($this->config['resources'], -1) != DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '';
+	$trailing_slash = substr($this->config['resources'], -1) != DIRECTORY_SEPARATOR;
+	$this->config['resources'] .= $trailing_slash ? DIRECTORY_SEPARATOR : '';
 	$this->config['exit_commands'] = (array) $this->config['exit_commands'];
 	extract($this->config);
 	$shell_config = compact('output') + array('exit_command' => $exit_commands[0]) + (array) $shell;
 	if (static::supportsReadline()) {
-	    $this->shell = new ReadlineShell(array('history_file' => $resources . "history") + $shell_config);
+	    $this->shell = new ReadlineShell(array(
+		'history_file' => $resources . "history"
+	    ) + $shell_config);
 	} else {
-	    $this->error("[WARN] Readline is not supported, falling back to basic shell (no edit mode, history, completion, etc.).");
+	    $this->error("[WARN] Readline is not supported," .
+		" falling back to basic shell (no edit mode, history, completion, etc.).");
 	    $this->shell = new BasicShell($shell_config);
 	}
 	$this->executor = new ExternalExecutor(compact('resources', 'output', 'error'));
@@ -40,8 +44,8 @@ class Console extends \dobie\Base {
 	if (!$this->shell || !$this->executor) {
 	    return false;
 	}
-	$this->out("Console running PHP".phpversion()." (". PHP_OS .")");
-	while(true) {
+	$this->out("Console running PHP" . phpversion() . " (" . PHP_OS . ")");
+	while (true) {
 	    $code = $this->shell->read();
 	    if (count ($code) == 1 && in_array ($code[0], $this->config['exit_commands'])) {
 		$this->stop();

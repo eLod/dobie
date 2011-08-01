@@ -3,51 +3,39 @@
 namespace dobie\shell;
 
 function readline($prompt) {
-    ReadlineProxy::out($prompt);
-    return ReadlineProxy::readline();
+    $_readline_proxy = readline_proxy();
+    $_readline_proxy->proxyOut($prompt);
+    return $_readline_proxy->proxyReadline();
 }
 
 function readline_read_history($path) {
-    ReadlineProxy::history('read_history');
+    $_readline_proxy = readline_proxy();
+    $_readline_proxy->proxyHistory('read_history');
     return true;
 }
 
 function readline_add_history($line) {
-    ReadlineProxy::history('add_history');
-    ReadlineProxy::cmdhistory($line);
+    $_readline_proxy = readline_proxy();
+    $_readline_proxy->proxyHistory('add_history');
+    $_readline_proxy->proxyCmdHistory($line);
     return true;
 }
 
 function readline_write_history($path) {
-    ReadlineProxy::history('write_history');
+    $_readline_proxy = readline_proxy();
+    $_readline_proxy->proxyHistory('write_history');
     return true;
 }
 
 function readline_completion_function($cb) {
 }
 
-class ReadlineProxy {
-    protected static $_proxy;
-
-    public static function connect($proxy) {
-	static::$_proxy = $proxy;
+function readline_proxy($proxy = null) {
+    static $_readline_proxy;
+    if ($proxy) {
+	$_readline_proxy = $proxy;
     }
-
-    public static function readline() {
-	return static::$_proxy->proxyReadline();
-    }
-
-    public static function out($output) {
-	static::$_proxy->proxyOut($output);
-    }
-
-    public static function history($line) {
-	static::$_proxy->proxyHistory($line);
-    }
-
-    public static function cmdhistory($line) {
-	static::$_proxy->proxyCmdHistory($line);
-    }
+    return $_readline_proxy;
 }
 
 namespace dobie\tests\mocks\shell;
@@ -59,7 +47,7 @@ class Readline extends \dobie\shell\Readline {
     public $input;
 
     public function __construct(array $config = array()) {
-	\dobie\shell\ReadlineProxy::connect($this);
+	\dobie\shell\readline_proxy($this);
 	parent::__construct($config);
     }
 

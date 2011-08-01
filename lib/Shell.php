@@ -7,7 +7,7 @@ abstract class Shell extends \dobie\Base {
 	'prompts' => array('main' => '> ', 'sub' => ''),
 	'exit_command' => 'quit',
 	'output' => STDOUT,
-	'error' => STDERR,
+	'error' => STDERR
     );
     protected $mergeConfig = array('prompts');
 
