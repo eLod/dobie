@@ -70,7 +70,7 @@ class Console extends \dobie\Base {
 	$this->config['resources'] .= $trailing_slash ? DIRECTORY_SEPARATOR : '';
 	$this->config['exit_commands'] = (array) $this->config['exit_commands'];
 	extract($this->config);
-	$shell_config = compact('output') + array('exit_command' => $exit_commands[0]) + (array) $shell;
+	$shell_config = array('exit_command' => $exit_commands[0]) + (array) $shell + compact('output');
 	if (static::supportsReadline()) {
 	    $this->shell = new ReadlineShell(array(
 		'history_file' => $resources . "history"
