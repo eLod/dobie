@@ -74,9 +74,9 @@ class Console extends \dobie\Base {
 	extract($this->config);
 	$shell_config = array('exit_command' => $exit_commands[0]) + (array) $shell + compact('output');
 	if (static::supportsReadline()) {
-	    $this->shell = new ReadlineShell(array(
+	    $this->shell = new ReadlineShell($shell_config + array(
 		'history_file' => $resources . "history"
-	    ) + $shell_config);
+	    ));
 	} else {
 	    $this->error("[WARN] Readline is not supported," .
 		" falling back to basic shell (no edit mode, history, completion, etc.).");
