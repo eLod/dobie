@@ -18,6 +18,7 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase {
 	$this->input = fopen("php://memory", "r+");
 	$this->output = $this->errors = array();
 	$this->console = new Console(array(
+	    'greet' => false,
 	    'shell' => array('input' => $this->input),
 	    'output' => array($this, 'proxyOut'),
 	    'error' => array($this, 'proxyError')
@@ -49,6 +50,26 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase {
 	$this->assertEquals(array('readCode', 'execute', 'readCode', 'stop'), $this->console->history);
 	$this->assertEquals('Exiting', array_pop($this->output));
 	$this->assertEquals('=> test', array_pop($this->output));
+    }
+
+    public function testGreet() {
+	$this->console->readCodes = array(array('quit'));
+	$this->console->setGreet(true);
+	$this->assertEquals(array(), $this->console->history);
+	$this->console->run();
+	$this->assertEquals(array('greet', 'readCode', 'stop'), $this->console->history);
+	$this->assertEquals('Exiting', array_pop($this->output));
+    }
+
+    public function testGreetCallback() {
+	$this->console->readCodes = array(array('quit'));
+	$greeted = false;
+	$this->console->setGreet(function () use (&$greeted) { $greeted = true; });
+	$this->assertEquals(array(), $this->console->history);
+	$this->console->run();
+	$this->assertEquals(array('greet', 'readCode', 'stop'), $this->console->history);
+	$this->assertEquals('Exiting', array_pop($this->output));
+	$this->assertTrue($greeted);
     }
 
     public function testDoesntRunWithoutShell() {

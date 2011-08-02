@@ -19,6 +19,7 @@ class Console extends \dobie\Base {
 	'exit_commands' => array('quit', 'exit', 'q'),
 	'resources' => '/tmp',
 	'shell' => array(),
+	'greet' => true,
 	'output' => STDOUT,
 	'error' => STDERR
     );
@@ -55,7 +56,8 @@ class Console extends \dobie\Base {
      *              - `'resources'` _string_: directory path to put resources in (must be writable),
      *              - `'shell'` _array_: extra options for the shell,
      *              - `'output'` _closure|resource_: output to use,
-     *              - `'error'` _closure|resource_: error to use.
+     *              - `'error'` _closure|resource_: error to use,
+     *              - `'greet'` _boolean|closure_: controls greeting (see `greet()`).
      *              For defaults see `$config`.
      */
     public function __construct(array $config = array()) {
@@ -82,7 +84,7 @@ class Console extends \dobie\Base {
     }
 
     /**
-     * Runs the console. Displays PHP information and reads codes
+     * Runs the console. Displays PHP information (see `greet()`) and reads codes
      * from shell passing it to the executor. If there were problems
      * with initializing the shell or the executor this method returns false.
      *
@@ -94,7 +96,7 @@ class Console extends \dobie\Base {
 	if (!$this->shell || !$this->executor) {
 	    return false;
 	}
-	$this->out("Console running PHP" . phpversion() . " (" . PHP_OS . ")");
+	$this->greet();
 	while (true) {
 	    $code = $this->shell->read();
 	    if (count ($code) == 1 && in_array ($code[0], $this->config['exit_commands'])) {
@@ -104,6 +106,23 @@ class Console extends \dobie\Base {
 		continue;
 	    }
 	    $this->executor->execute($code);
+	}
+    }
+
+    /**
+     * Greets the user with PHP information.
+     * When the configuration value `'greet'` is true
+     * it displays a greeting on output with php version
+     * and OS, if the value is callable
+     * it calls it (without arguments).
+     *
+     * @return void
+     */
+    public function greet() {
+	if (is_callable($this->config['greet'])) {
+	    call_user_func($this->config['greet']);
+	} else if ($this->config['greet'] == true) {
+	    $this->out("Console running PHP" . phpversion() . " (" . PHP_OS . ")");
 	}
     }
 

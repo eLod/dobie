@@ -41,6 +41,17 @@ class Console extends \dobie\Console {
 	$this->executor->stop();
 	$this->executor = null;
     }
+
+    public function greet() {
+	if (is_callable($this->config['greet']) || $this->config['greet']) {
+	    $this->history[] = 'greet';
+	}
+	parent::greet();
+    }
+
+    public function setGreet($greet) {
+	$this->config['greet'] = $greet;
+    }
 }
 
 ?>
