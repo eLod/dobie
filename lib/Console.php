@@ -6,7 +6,15 @@ use dobie\shell\Readline as ReadlineShell;
 use dobie\shell\Basic as BasicShell;
 use dobie\executor\ExternalExecutor;
 
+/**
+ * The console aggregates the executor and the shell, creating the REPL.
+ */
 class Console extends \dobie\Base {
+    /**
+     * Default configuration values.
+     *
+     * @var array
+     */
     protected $config = array(
 	'exit_commands' => array('quit', 'exit', 'q'),
 	'resources' => '/tmp',
@@ -14,9 +22,42 @@ class Console extends \dobie\Base {
 	'output' => STDOUT,
 	'error' => STDERR
     );
+
+    /**
+     * An instance of an `Executor` object.
+     *
+     * @see Executor
+     * @var Executor
+     */
     protected $executor;
+
+    /**
+     * An instance of a `Shell` object.
+     *
+     * @see Shell
+     * @var Shell
+     */
     protected $shell;
 
+    /**
+     * Initializes a console. Creates an ExternalExecutor, checks for readline
+     * and if supported created a Readline shell, otherwise falls back to a Basic
+     * shell.
+     *
+     * @see Executor
+     * @see executor\ExternalExecutor
+     * @see Shell
+     * @see shell\Basic
+     * @see shell\Readline
+     * @see $config
+     * @param array $config Configuration options to use, accepted options are:
+     *              - `'exit_commands'` _array_: list of commands for exiting the shell,
+     *              - `'resources'` _string_: directory path to put resources in (must be writable),
+     *              - `'shell'` _array_: extra options for the shell,
+     *              - `'output'` _closure|resource_: output to use,
+     *              - `'error'` _closure|resource_: error to use.
+     *              For defaults see `$config`.
+     */
     public function __construct(array $config = array()) {
 	parent::__construct($config);
 	if (!is_dir($this->config['resources']) || !is_writable($this->config['resources'])) {
@@ -40,6 +81,15 @@ class Console extends \dobie\Base {
 	$this->executor = new ExternalExecutor(compact('resources', 'output', 'error'));
     }
 
+    /**
+     * Runs the console. Displays PHP information and reads codes
+     * from shell passing it to the executor. If there were problems
+     * with initializing the shell or the executor this method returns false.
+     *
+     * @see $executor
+     * @see $shell
+     * @return void|false
+     */
     public function run() {
 	if (!$this->shell || !$this->executor) {
 	    return false;
@@ -57,6 +107,16 @@ class Console extends \dobie\Base {
 	}
     }
 
+    /**
+     * Stops the console. Stops the shell and executor and displays message.
+     *
+     * @see $executor
+     * @see $shell
+     * @param integer $status Controls message destination (`'output'` when `0`,
+     *                `'error'` otherwise).
+     * @param string $message The message to display, if any.
+     * @return void
+     */
     public function stop($status = 0, $message = "Exiting.") {
 	if ($this->shell) {
 	    $this->shell->stop();
@@ -69,6 +129,11 @@ class Console extends \dobie\Base {
 	}
     }
 
+    /**
+     * Checks readline support.
+     *
+     * @return boolean If readline is supported.
+     */
     public static function supportsReadline() {
 	return is_callable('readline');
     }
