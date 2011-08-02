@@ -29,7 +29,7 @@ class FormatterTest extends \PHPUnit_Framework_TestCase {
 	$this->assertFormatted("false", false);
 	$this->assertFormatted("null", null);
 	$string = "abcdefg1234'\"+!%/=(){}";
-	$this->assertFormatted($string, $string);
+	$this->assertFormatted(var_export($string, true), $string);
     }
 
     public function testFormatObject() {

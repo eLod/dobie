@@ -23,8 +23,6 @@ class Formatter {
 	    return $obj ? "true" : "false";
 	} else if (is_null($obj)) {
 	    return "null";
-	} else if (is_string($obj)) {
-	    return $obj;
 	} else {
 	    return var_export($obj, true);
 	}
