@@ -19,6 +19,7 @@ class Console extends \dobie\Base {
 	'exit_commands' => array('quit', 'exit', 'q'),
 	'resources' => '/tmp',
 	'shell' => array(),
+	'readline' => true,
 	'executor' => array(),
 	'greet' => true,
 	'output' => STDOUT,
@@ -56,6 +57,7 @@ class Console extends \dobie\Base {
      *              - `'exit_commands'` _array_: list of commands for exiting the shell,
      *              - `'resources'` _string_: directory path to put resources in (must be writable),
      *              - `'shell'` _array_: extra options for the shell,
+     *              - `'readline'` _boolean_: enable readline if supported,
      *              - `'executor'` _array_: extra options for the executor,
      *              - `'output'` _closure|resource_: output to use,
      *              - `'error'` _closure|resource_: error to use,
@@ -73,13 +75,15 @@ class Console extends \dobie\Base {
 	$this->config['exit_commands'] = (array) $this->config['exit_commands'];
 	extract($this->config);
 	$shell_config = array('exit_command' => $exit_commands[0]) + (array) $shell + compact('output');
-	if (static::supportsReadline()) {
+	if ($readline === true && static::supportsReadline()) {
 	    $this->shell = new ReadlineShell($shell_config + array(
 		'history_file' => $resources . "history"
 	    ));
 	} else {
-	    $this->error("[WARN] Readline is not supported," .
-		" falling back to basic shell (no edit mode, history, completion, etc.).");
+	    if ($readline === true) {
+		$this->error("[WARN] Readline is not supported," .
+		    " falling back to basic shell (no edit mode, history, completion, etc.).");
+	    }
 	    $this->shell = new BasicShell($shell_config);
 	}
 	$executor_config = (array) $executor + compact('resources', 'output', 'error');

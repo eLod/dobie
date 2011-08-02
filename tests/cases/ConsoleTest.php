@@ -107,6 +107,20 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase {
 	$console->stop();
     }
 
+    public function testDoesNotUseReadlineIfPresentedButDisabled() {
+	ConsoleWithConfigurableReadline::$overrideReadline = true;
+	$this->errors = array();
+	$console = new ConsoleWithConfigurableReadline(array(
+	    'readline' => false,
+	    'shell' => array('completion' => false, 'history' => false),
+	    'error' => array($this, 'proxyOut'),
+	    'output' => false
+	));
+	$this->assertFalse($console->shell() instanceof \dobie\shell\Readline);
+	$this->assertEquals(array(), $this->errors);
+	$console->stop();
+    }
+
     public function testShowsWarningIfReadlineNotPresented() {
 	ConsoleWithConfigurableReadline::$overrideReadline = false;
 	$console = new ConsoleWithConfigurableReadline(array(
