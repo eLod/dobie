@@ -19,6 +19,7 @@ class Console extends \dobie\Base {
 	'exit_commands' => array('quit', 'exit', 'q'),
 	'resources' => '/tmp',
 	'shell' => array(),
+	'executor' => array(),
 	'greet' => true,
 	'output' => STDOUT,
 	'error' => STDERR
@@ -55,6 +56,7 @@ class Console extends \dobie\Base {
      *              - `'exit_commands'` _array_: list of commands for exiting the shell,
      *              - `'resources'` _string_: directory path to put resources in (must be writable),
      *              - `'shell'` _array_: extra options for the shell,
+     *              - `'executor'` _array_: extra options for the executor,
      *              - `'output'` _closure|resource_: output to use,
      *              - `'error'` _closure|resource_: error to use,
      *              - `'greet'` _boolean|closure_: controls greeting (see `greet()`).
@@ -80,7 +82,8 @@ class Console extends \dobie\Base {
 		" falling back to basic shell (no edit mode, history, completion, etc.).");
 	    $this->shell = new BasicShell($shell_config);
 	}
-	$this->executor = new ExternalExecutor(compact('resources', 'output', 'error'));
+	$executor_config = (array) $executor + compact('resources', 'output', 'error');
+	$this->executor = new ExternalExecutor($executor_config);
     }
 
     /**
